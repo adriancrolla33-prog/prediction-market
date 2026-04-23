@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { setRequestLocale } from 'next-intl/server'
 import {
   generateSportsVerticalEventMetadata,
   renderSportsVerticalEventPage,
@@ -19,7 +20,11 @@ async function CachedSportsEventPageContent({
   locale,
   sport,
   event,
-}: Awaited<PageProps<'/[locale]/sports/[sport]/[event]'>['params']>) {
+}: {
+  locale: string
+  sport: string
+  event: string
+}) {
   'use cache'
 
   return await renderSportsVerticalEventPage({
@@ -33,6 +38,7 @@ async function CachedSportsEventPageContent({
 export default async function SportsEventPage({
   params,
 }: PageProps<'/[locale]/sports/[sport]/[event]'>) {
-  const resolvedParams = await params
-  return <CachedSportsEventPageContent {...resolvedParams} />
+  const { locale, sport, event } = await params
+  setRequestLocale(locale)
+  return <CachedSportsEventPageContent locale={locale} sport={sport} event={event} />
 }

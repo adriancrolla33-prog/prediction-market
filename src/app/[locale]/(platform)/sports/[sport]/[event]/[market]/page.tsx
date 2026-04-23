@@ -68,7 +68,12 @@ async function CachedSportsEventMarketPageContent({
   sport,
   event,
   market,
-}: Awaited<PageProps<'/[locale]/sports/[sport]/[event]/[market]'>['params']>) {
+}: {
+  locale: string
+  sport: string
+  event: string
+  market: string
+}) {
   'use cache'
 
   const resolvedLocale = locale as SupportedLocale
@@ -164,8 +169,7 @@ async function CachedSportsEventMarketPageContent({
 export default async function SportsEventMarketPage({
   params,
 }: PageProps<'/[locale]/sports/[sport]/[event]/[market]'>) {
-  const resolvedParams = await params
-  const { locale, sport, event, market } = resolvedParams
+  const { locale, sport, event, market } = await params
   setRequestLocale(locale)
   if (
     sport === STATIC_PARAMS_PLACEHOLDER
@@ -175,5 +179,12 @@ export default async function SportsEventMarketPage({
     notFound()
   }
 
-  return <CachedSportsEventMarketPageContent {...resolvedParams} />
+  return (
+    <CachedSportsEventMarketPageContent
+      locale={locale}
+      sport={sport}
+      event={event}
+      market={market}
+    />
+  )
 }
